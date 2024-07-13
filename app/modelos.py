@@ -1,42 +1,50 @@
 from enum import Enum , auto
+from collections import namedtuple
+
+Datos_Entrada = namedtuple("Datos_Entrada", ("precio","edad_max"))
 
 class TipoEntrada(Enum):
-    Bebe = auto()
-    Niño = auto()
-    Adulto = auto()
-    Jubilado = auto()
+    Bebe = Datos_Entrada (0 ,2)
+    Niño = Datos_Entrada(14 , 12)
+    Adulto =Datos_Entrada (23 , 64)
+    Jubilado = Datos_Entrada(18 , 99)
 
 class Entrada:
     def __init__(self, edad: int):
+        self.__validate_edad(edad)
+        self.__edad = edad
+
+        for tipo in TipoEntrada:
+            if edad <= tipo.value.edad_max:
+                self.tipo = tipo
+                self.precio = tipo.value.precio
+                break
+            
+    def __validate_edad(self,edad):
+        if edad < 0:
+            raise ValueError("La edad no debe ser negativa")   
+        elif edad > 100:
+            raise ValueError("La edad no puede ser mayor a 100")
         
-        if edad >99:
-            raise ValueError("Debe escribir una edad menor de 100")
-
-        if edad <0:
-            raise ValueError("No debe escribir una edad negativa")
-        elif edad <= 2:
-            self.tipo = TipoEntrada.Bebe
-            self.precio = 0
-        elif edad <13:
-            self.tipo = TipoEntrada.Niño
-            self.precio = 14
-        elif edad <65:
-            self.tipo = TipoEntrada.Adulto
-            self.precio = 23
-        else:
-            self.tipo = TipoEntrada.Jubilado
-            self.precio = 18 
-
+        
+    
 class Grupo_Entrada:
     def __init__(self):
         self.total = 0
         self.numero_entradas = 0
+        """
         self.tipos_entrada = {
             TipoEntrada.Bebe : {'Q':0,'P':0},
             TipoEntrada.Niño :  {'Q':0,'P':14},
             TipoEntrada.Adulto :  {'Q':0,'P':23},
             TipoEntrada.Jubilado : {'Q':0,'P':18}
         }
+        """
+        self.tipos_entrada = {}
+
+        for tipo in TipoEntrada:
+            self.tipos_entrada[tipo] = {"Q" : 0 , "P": tipo.value.precio }
+
      
 
     def add_entrada(self, edad):
