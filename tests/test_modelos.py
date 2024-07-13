@@ -1,4 +1,5 @@
 from app.modelos import Entrada, TipoEntrada ,  Grupo_Entrada
+import pytest
 
 def test_crear_entrada():
     
@@ -18,8 +19,19 @@ def test_crear_entrada():
     assert entrada.tipo == TipoEntrada.Bebe
     assert entrada.precio == 0
 
-def xtest_crear_entrada_edad_negativa_error():
-    pass
+def test_crear_entrada_edad_negativa_error():
+    with pytest.raises(ValueError):
+        Entrada(-2)
+    """
+        try:
+            entrada = Entrada(-2)
+            assert False, "No ha saltado ValueError"
+        except ValueError:
+            assert True
+    """    
+def test_crear_entrada_edad_centenario_error():
+    with pytest.raises(ValueError):
+        Entrada(102)
 
 def test_crear_grupo_entradas():
     grupo = Grupo_Entrada()
@@ -40,3 +52,29 @@ def test_anyadir_entradas_a_grupos():
     grupo.add_entrada(2)
     assert grupo.numero_entradas == 4
     assert grupo.total == 55
+
+
+
+def test_cantidad_entradas_por_tipo():
+
+    grupo = Grupo_Entrada()
+    grupo.add_entrada(10)
+
+    assert grupo.cantidad_entradas_por_tipo(TipoEntrada.Niño) == 1  
+
+    grupo.add_entrada(35)
+    assert grupo.cantidad_entradas_por_tipo(TipoEntrada.Adulto) ==1
+
+    grupo.add_entrada(13)
+    assert grupo.cantidad_entradas_por_tipo(TipoEntrada.Adulto) ==2
+
+def test_subtotal_por_tipo():
+    grupo = Grupo_Entrada()
+    grupo.add_entrada(10)
+    assert grupo.subtotal_tipo(TipoEntrada.Niño) == 14 
+
+    grupo.add_entrada(60)
+    assert grupo.subtotal_tipo(TipoEntrada.Adulto) == 23
+
+    grupo.add_entrada(32)
+    assert grupo.subtotal_tipo(TipoEntrada.Adulto) == 23 + 23    
