@@ -13,7 +13,7 @@
 10    EDAD: 
 11    CONF
 """
-from modelos import Grupo_Entrada, TipoEntrada
+from app.modelos import Grupo_Entrada, TipoEntrada
 from simple_screen import locate, Print , cls, Screen_manager , Input
 
 class VistaGrupo:
@@ -37,11 +37,12 @@ class VistaEntrada:
     def __init__(self ,label:str, x,y):
         self.label = label
         self.x = x
-        self.y = y     
+        self.y = y
+        self.value = ""
+             
     def paint(self): 
         locate(self.x , self.y , self.label)
-        value = Input()
-
+        return Input()
 print(__name__)
 if __name__ == "__main__":
     with Screen_manager:
